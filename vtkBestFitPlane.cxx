@@ -81,27 +81,36 @@ int vtkBestFitPlane::RequestData(
   a[2][0] = 0; a[2][1] = 0;  a[2][2] = 0;
 
   unsigned int i, j;
+
   for(vtkIdType pointId = 0; pointId < numPoints; pointId++ )
     {
     double x[3];
     double xp[3];
     input->GetPoint(pointId, x);
+
+    // Note that a is symmetric, so you could also improve here
     for( j =0; j < 3; j++ )
       {
       xp[j] = x[j] - center[j];
+      // Here you compute the w_j
+      // w_j = weight( xp )
       for (i = 0; i < 3; i++)
         {
+        // a[j][i] += w_j * xp[j] * xp[i];
         a[j][i] += xp[j] * xp[i];
         }
+      // sum += w_j
       }
     }
 
   // Divide by N-1 for an unbiased estimate
-  for(i = 0; i < 3; i++)
+  for( j = 0; j < 3; j++ )
     {
-    a[0][i] /= dNumPoints-1;
-    a[1][i] /= dNumPoints-1;
-    a[2][i] /= dNumPoints-1;
+    for(i = 0; i < 3; i++)
+      {
+      // a[j][i] /= sum;
+      a[j][i] /= dNumPoints-1;
+      }
     }
 
   // Extract eigenvectors from covariance matrix
