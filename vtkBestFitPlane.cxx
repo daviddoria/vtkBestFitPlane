@@ -102,6 +102,10 @@ int vtkBestFitPlane::RequestData(
   a[1][0] = 0; a[1][1] = 0;  a[1][2] = 0;
   a[2][0] = 0; a[2][1] = 0;  a[2][2] = 0;
 
+  unsigned int i, j;
+
+  double weightSum = 0;
+  
   for(vtkIdType pointId = 0; pointId < numPoints; pointId++ )
     {
     double x[3];
@@ -109,23 +113,32 @@ int vtkBestFitPlane::RequestData(
     double distanceFromCenter = sqrt(vtkMath::Distance2BetweenPoints(x, center));
     double WeightFunction(distanceFromCenter);
     input->GetPoint(pointId, x);
-    xp[0] = x[0] - center[0];
-    xp[1] = x[1] - center[1];
-    xp[2] = x[2] - center[2];
-    for (unsigned int i = 0; i < 3; i++)
+
+    for(j = 0; j < 3; j++ )
       {
-      a[0][i] += xp[0] * xp[i];
-      a[1][i] += xp[1] * xp[i];
-      a[2][i] += xp[2] * xp[i];
+      xp[j] = x[j] - center[j];
+
+      double w = this->WeightFunction(xp[j]);
+      // Take advantage of the fact that the scatter materix is symmetric
+      for (i = j; i < 3; i++)
+        {
+        double value = w * xp[j] * xp[i];
+        // Store the computed value in the current position (j,i) and its
+        // reflection (i,j).
+        a[j][i] += value;
+        a[i][j] += value;
+        }
+      weightSum += w;
       }
     }
 
   // Divide by N-1 for an unbiased estimate
-  for(unsigned int i = 0; i < 3; i++)
+  for( j = 0; j < 3; j++ )
     {
-    a[0][i] /= dNumPoints-1;
-    a[1][i] /= dNumPoints-1;
-    a[2][i] /= dNumPoints-1;
+    for(i = 0; i < 3; i++)
+      {
+      a[j][i] /= weightSum;
+      }
     }
 
   // Extract eigenvectors from covariance matrix
