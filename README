@@ -1,0 +1,3 @@
+vtkBestFitPlane - Find the best fit (least squares) plane to a set of points.
+
+vtkCenterOfMass - Find the center of mass of a point set.

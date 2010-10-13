@@ -15,6 +15,28 @@
 
 vtkStandardNewMacro(vtkBestFitPlane);
 
+vtkBestFitPlane::vtkBestFitPlane()
+{
+  this->WeightMode = UNIFORMWEIGHT;
+  this->GaussianVariance = 1.0;
+}
+
+double vtkBestFitPlane::WeightFunction(double distance)
+{
+  if(this->WeightMode == UNIFORMWEIGHT)
+    {
+    return 1;
+    }
+  else if(this->WeightMode == GAUSSIANWEIGHT)
+    {
+    return vtkMath::GaussianWeight(this->GaussianVariance, distance);
+    }
+  else
+    {
+    vtkErrorMacro(<< "Invalid WeightMode specified!");
+    }
+}
+
 namespace //anonymous
 {
 
@@ -80,10 +102,12 @@ int vtkBestFitPlane::RequestData(
   a[1][0] = 0; a[1][1] = 0;  a[1][2] = 0;
   a[2][0] = 0; a[2][1] = 0;  a[2][2] = 0;
 
-  for(unsigned int pointId = 0; pointId < numPoints; pointId++ )
+  for(vtkIdType pointId = 0; pointId < numPoints; pointId++ )
     {
     double x[3];
     double xp[3];
+    double distanceFromCenter = sqrt(vtkMath::Distance2BetweenPoints(x, center));
+    double WeightFunction(distanceFromCenter);
     input->GetPoint(pointId, x);
     xp[0] = x[0] - center[0];
     xp[1] = x[1] - center[1];
@@ -110,7 +134,8 @@ int vtkBestFitPlane::RequestData(
   double eigval[3];
   vtkMath::Jacobi(a,eigval,eigvec);
 
-  // Set the plane normal to the smallest eigen vector
+  // Set the plane normal to the eigenvector corresponding
+  // to the smallest eigenvalue.
   double normal[3];
   normal[0] = eigvec[0][2];
   normal[1] = eigvec[1][2];

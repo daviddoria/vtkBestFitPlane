@@ -28,13 +28,41 @@ public:
   vtkTypeMacro(vtkBestFitPlane,vtkPolyDataAlgorithm);
 
 protected:
-  vtkBestFitPlane(){}
+  
+  vtkBestFitPlane();
 
   int RequestData(vtkInformation* request,
                   vtkInformationVector** inputVector,
                   vtkInformationVector* outputVector );
   int FillInputPortInformation(int port, vtkInformation* info);
+  
+  enum WeightEnum {UNIFORMWEIGHT, GAUSSIANWEIGHT};
 
+  // Description:
+  // Compute a weight based on the WeightMode.
+  double WeightFunction(double distance);
+
+  // Description:
+  // Set the WeightMode to UNIFORMWEIGHT
+  void SetWeightModeToUniform(){this->WeightMode = UNIFORMWEIGHT;}
+
+  // Description:
+  // Set the WeightMode to GAUSSIANWEIGHT
+  void SetWeightModeToGaussian(){this->WeightMode = GAUSSIANWEIGHT;}
+  
+  // Description:
+  // A flag specifying how to weight points.
+  int WeightMode;
+
+  // Description:
+  // Accessor/mutator for GaussianVariance
+  vtkSetMacro(GaussianVariance, double);
+  vtkGetMacro(GaussianVariance, double);
+  
+  // Description:
+  // The variance of the Gaussian function to use if
+  // WeightMode == GAUSSIANWEIGHT
+  double GaussianVariance;
 private:
 
   vtkBestFitPlane(const vtkBestFitPlane&);  // Not implemented.
