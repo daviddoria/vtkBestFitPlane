@@ -80,24 +80,24 @@ int vtkBestFitPlane::RequestData(
   a[1][0] = 0; a[1][1] = 0;  a[1][2] = 0;
   a[2][0] = 0; a[2][1] = 0;  a[2][2] = 0;
 
-  for(unsigned int pointId = 0; pointId < numPoints; pointId++ )
+  unsigned int i, j;
+  for(vtkIdType pointId = 0; pointId < numPoints; pointId++ )
     {
     double x[3];
     double xp[3];
     input->GetPoint(pointId, x);
-    xp[0] = x[0] - center[0];
-    xp[1] = x[1] - center[1];
-    xp[2] = x[2] - center[2];
-    for (unsigned int i = 0; i < 3; i++)
+    for( j =0; j < 3; j++ )
       {
-      a[0][i] += xp[0] * xp[i];
-      a[1][i] += xp[1] * xp[i];
-      a[2][i] += xp[2] * xp[i];
+      xp[j] = x[j] - center[j];
+      for (i = 0; i < 3; i++)
+        {
+        a[j][i] += xp[j] * xp[i];
+        }
       }
     }
 
   // Divide by N-1 for an unbiased estimate
-  for(unsigned int i = 0; i < 3; i++)
+  for(i = 0; i < 3; i++)
     {
     a[0][i] /= dNumPoints-1;
     a[1][i] /= dNumPoints-1;
