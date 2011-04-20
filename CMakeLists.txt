@@ -14,3 +14,8 @@ ADD_EXECUTABLE(vtkCenterOfMassExample vtkCenterOfMassExample.cxx
 vtkCenterOfMass.cxx)
 TARGET_LINK_LIBRARIES(vtkCenterOfMassExample vtkHybrid )
 
+############
+
+ADD_EXECUTABLE(ComputeBestFitPlane ComputeBestFitPlane.cxx
+vtkBestFitPlane.cxx vtkCenterOfMass.cxx)
+TARGET_LINK_LIBRARIES(ComputeBestFitPlane vtkHybrid )

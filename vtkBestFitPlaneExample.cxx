@@ -13,7 +13,7 @@
 template<class A>
 bool fuzzyCompare1D(A a, A b)
 {
-  return std::abs(a - b) < vtkstd::numeric_limits<A>::epsilon();
+  return std::abs(a - b) < std::numeric_limits<A>::epsilon();
 }
 
 template<class A>
