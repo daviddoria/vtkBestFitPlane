@@ -32,7 +32,7 @@ protected:
 
   int RequestData(vtkInformation* request,
                   vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector );
+                  vtkInformationVector* outputVector ) override;
 
 private:
 

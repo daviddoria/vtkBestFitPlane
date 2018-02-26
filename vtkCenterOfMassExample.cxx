@@ -12,7 +12,7 @@
 template<class A>
 bool fuzzyCompare1D(A a, A b)
 {
-  return std::abs(a - b) < vtkstd::numeric_limits<A>::epsilon();
+  return std::abs(a - b) < std::numeric_limits<A>::epsilon();
 }
 
 template<class A>
@@ -46,12 +46,12 @@ int main (int, char *[])
   // Compute the center of mass
   vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
     vtkSmartPointer<vtkCenterOfMass>::New();
-  centerOfMassFilter->SetInputConnection(polydata->GetProducerPort());
+  centerOfMassFilter->SetInputData(polydata);
   centerOfMassFilter->Update();
   
   vtkDoubleArray* centerOfMass = vtkDoubleArray::SafeDownCast(centerOfMassFilter->GetOutput()->GetFieldData()->GetArray("CenterOfMass"));
   double center[3];
-  centerOfMass->GetTupleValue(0,center);
+  centerOfMass->GetTypedTuple(0,center);
 
   std::cout << "Center: " << center[0] << " " << center[1] << " " << center[2] << std::endl;
 

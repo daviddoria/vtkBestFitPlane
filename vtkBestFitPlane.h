@@ -33,8 +33,8 @@ protected:
 
   int RequestData(vtkInformation* request,
                   vtkInformationVector** inputVector,
-                  vtkInformationVector* outputVector );
-  int FillInputPortInformation(int port, vtkInformation* info);
+                  vtkInformationVector* outputVector ) override;
+  int FillInputPortInformation(int port, vtkInformation* info) override;
   
   enum WeightEnum {UNIFORMWEIGHT, GAUSSIANWEIGHT};
 
