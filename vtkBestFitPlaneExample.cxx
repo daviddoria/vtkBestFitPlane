@@ -40,19 +40,19 @@ int main(int, char *[])
   // Compute the best fit plane.
   vtkSmartPointer<vtkBestFitPlane> bestFitFilter =
     vtkSmartPointer<vtkBestFitPlane>::New();
-  bestFitFilter->SetInputConnection(polydata->GetProducerPort());
+  bestFitFilter->SetInputData(polydata);
   bestFitFilter->Update();
 
   double normal[3];
   vtkDoubleArray* normalArray = vtkDoubleArray::SafeDownCast(bestFitFilter->
                       GetOutput()->GetFieldData()->GetArray("BestFitPlaneNormal"));
-  normalArray->GetTupleValue(0,normal);
+  normalArray->GetTypedTuple(0,normal);
   std::cout << "Normal = (" << normal[0] << ", " << normal[1] << ", " << normal[2] << ")" << std::endl;
 
   double origin[3];
   vtkDoubleArray* originArray = vtkDoubleArray::SafeDownCast(bestFitFilter->
                       GetOutput()->GetFieldData()->GetArray("BestFitPlaneOrigin"));
-  originArray->GetTupleValue(0,origin);
+  originArray->GetTypedTuple(0,origin);
   std::cout << "Origin = (" << origin[0] << ", " << origin[1] << ", " << origin[2] << ")" << std::endl;
 
   double correctOrigin[3] = {5.5, 0.5, 0};

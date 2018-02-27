@@ -34,6 +34,7 @@ double vtkBestFitPlane::WeightFunction(double distance)
   else
     {
     vtkErrorMacro(<< "Invalid WeightMode specified!");
+    return 1;
     }
 }
 
@@ -88,11 +89,11 @@ int vtkBestFitPlane::RequestData(
   // Find the center of mass of the points
   vtkSmartPointer<vtkCenterOfMass> centerOfMassFilter =
     vtkSmartPointer<vtkCenterOfMass>::New();
-  centerOfMassFilter->SetInputConnection(input->GetProducerPort());
+  centerOfMassFilter->SetInputData(input);
   centerOfMassFilter->Update();
 
   double center[3];
-  vtkDoubleArray::SafeDownCast(centerOfMassFilter->GetOutput()->GetFieldData()->GetArray("CenterOfMass"))->GetTupleValue(0, center);
+  vtkDoubleArray::SafeDownCast(centerOfMassFilter->GetOutput()->GetFieldData()->GetArray("CenterOfMass"))->GetTypedTuple(0, center);
 
   //std::cout << "Center of mass: " << Center[0] << " " << Center[1] << " " << Center[2] << vtkstd::endl;
 
